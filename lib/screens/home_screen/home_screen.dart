@@ -1,4 +1,5 @@
 import 'dart:ffi';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -32,10 +33,7 @@ class HomeScreen extends GetView<HomeController> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        MoviesPage(
-          movies: controller.nowPlayingList,
-          isLoading: controller.nowPlayingIsLoading.value,
-        ),
+        loadHomeSlider(),
         getNowPlayingMovies(1),
         getNowPlayingMovies(2),
         const SizedBox(
@@ -50,6 +48,28 @@ class HomeScreen extends GetView<HomeController> {
         getUpComingMovies(2),
       ],
     );
+  }
+
+  Widget loadHomeSlider() {
+    if (controller.nowPlayingIsLoading.isFalse) {
+      return MoviesPage(
+        movies: controller.nowPlayingList,
+        isLoading: controller.nowPlayingIsLoading.value,
+      );
+    } else {
+      return const Center(
+        child: Padding(
+          padding: EdgeInsets.only(top: 400),
+          child: Center(
+            child: CircularProgressIndicator(
+              color: Colors.grey,
+              strokeWidth: 2,
+              backgroundColor: Colors.cyanAccent,
+            ),
+          ),
+        ),
+      );
+    }
   }
 
   Widget getNowPlayingMovies(int section) {

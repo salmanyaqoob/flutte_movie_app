@@ -6,6 +6,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 import 'package:movie/models/movie_model.dart';
 import 'package:movie/screens/home_screen/home_controller.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../animation.dart';
 import '../../constants.dart';
@@ -33,46 +34,78 @@ class HomeScreen extends GetView<HomeController> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        loadHomeSlider(),
-        getNowPlayingMovies(1),
-        getNowPlayingMovies(2),
+        loadHomeSlider(context),
+        getNowPlayingMovies(1, context),
+        getNowPlayingMovies(2, context),
         const SizedBox(
           height: 14,
         ),
-        getTopRatedMovies(1),
-        getTopRatedMovies(2),
+        getTopRatedMovies(1, context),
+        getTopRatedMovies(2, context),
         const SizedBox(
           height: 14,
         ),
-        getUpComingMovies(1),
-        getUpComingMovies(2),
+        getUpComingMovies(1, context),
+        getUpComingMovies(2, context),
       ],
     );
   }
 
-  Widget loadHomeSlider() {
+  Widget loadHomeSlider(BuildContext context) {
     if (controller.nowPlayingIsLoading.isFalse) {
       return MoviesPage(
         movies: controller.nowPlayingList,
         isLoading: controller.nowPlayingIsLoading.value,
       );
     } else {
-      return const Center(
-        child: Padding(
-          padding: EdgeInsets.only(top: 400),
-          child: Center(
-            child: CircularProgressIndicator(
-              color: Colors.grey,
-              strokeWidth: 2,
-              backgroundColor: Colors.cyanAccent,
-            ),
+      return Padding(
+        padding: const EdgeInsets.only(top: 100, left: 20, right: 20, bottom: 80),
+        child: Shimmer.fromColors(
+          baseColor: Colors.grey.shade300,
+          highlightColor: Colors.grey.shade100,
+          enabled: true,
+          period: const Duration(milliseconds: 1500),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                ),
+                width: double.infinity,
+                height: 200.0,
+              ),
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 10.0),
+              ),
+              Container(
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                ),
+                width: double.infinity,
+                height: 20.0,
+              ),
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 6.0),
+              ),
+              Container(
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                ),
+                width: double.infinity,
+                height: 14.0,
+              ),
+            ],
           ),
         ),
       );
     }
   }
 
-  Widget getNowPlayingMovies(int section) {
+  Widget getNowPlayingMovies(int section, BuildContext context) {
     if (controller.nowPlayingIsLoading.isFalse) {
       if (section == 1) {
         return const DelayedDisplay(
@@ -84,11 +117,16 @@ class HomeScreen extends GetView<HomeController> {
         );
       }
     } else {
-      return SizedBox();
+      if(section == 1) {
+        return const DelayedDisplay(
+          delay: Duration(microseconds: 800),
+          child: HeaderText(text: "In Theaters"));
+      }
+      return loadMoviesShimmer(context);
     }
   }
 
-  Widget getTopRatedMovies(int section) {
+  Widget getTopRatedMovies(int section, BuildContext context) {
     if (controller.topRatedIsLoading.isFalse) {
       if (section == 1) {
         return const DelayedDisplay(
@@ -103,11 +141,16 @@ class HomeScreen extends GetView<HomeController> {
         );
       }
     } else {
-      return SizedBox();
+      if(section == 1) {
+        return const DelayedDisplay(
+            delay: Duration(microseconds: 800),
+            child: HeaderText(text: "Top Rated"));
+      }
+      return loadMoviesShimmer(context);
     }
   }
 
-  Widget getUpComingMovies(int section) {
+  Widget getUpComingMovies(int section, BuildContext context) {
     if (controller.upComingIsLoading.isFalse) {
       if (section == 1) {
         return const DelayedDisplay(
@@ -122,8 +165,81 @@ class HomeScreen extends GetView<HomeController> {
         );
       }
     } else {
-      return SizedBox();
+      if(section == 1) {
+        return const DelayedDisplay(
+            delay: Duration(microseconds: 800),
+            child: HeaderText(text: "Upcoming"));
+      }
+      return loadMoviesShimmer(context);
     }
+  }
+
+
+  Widget loadMoviesShimmer(BuildContext context){
+    return Padding(
+      padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
+      child: Shimmer.fromColors(
+        baseColor: Colors.grey.shade300,
+        highlightColor: Colors.grey.shade100,
+        enabled: true,
+        period: const Duration(milliseconds: 1500),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Column(
+              children: [
+                Container(
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                  ),
+                  height: 150.0,
+                  width: (MediaQuery.of(context).size.width / 2) - 30,
+                ),
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 6.0),
+                ),
+                Container(
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                  ),
+                  height: 20.0,
+                  width: (MediaQuery.of(context).size.width / 2) - 30,
+                ),
+              ],
+            ),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 10.0),
+            ),
+            Column(
+              children: [
+                Container(
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                  ),
+                  height: 150.0,
+                  width: (MediaQuery.of(context).size.width / 2) - 30,
+                ),
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 6.0),
+                ),
+                Container(
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                  ),
+                  height: 20.0,
+                  width: (MediaQuery.of(context).size.width / 2) - 30,
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   void futureCall() async {

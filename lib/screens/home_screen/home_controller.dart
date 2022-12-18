@@ -21,12 +21,15 @@ class HomeController extends GetxController {
   Future<List<MovieModel>?> loadMovies(String moviesType) async{
     List<MovieModel>? movies = await ApiService().getMovies(moviesType);
     if(moviesType == MoviesType.nowPlaying.toString()){
+      await Future.delayed(Duration(seconds: 1));
       nowPlayingList.value = movies as List<MovieModel>;
       nowPlayingIsLoading.value = false;
     } else if(moviesType == MoviesType.topRated.toString()){
+      await Future.delayed(Duration(seconds: 2));
       topRatedlist.value = movies as List<MovieModel>;
       topRatedIsLoading.value = false;
     } else if(moviesType== MoviesType.upComing.toString()){
+      await Future.delayed(Duration(seconds: 3));
       upCominglist.value = movies as List<MovieModel>;
       upComingIsLoading.value = false;
     }
